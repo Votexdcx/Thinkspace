@@ -1,4 +1,13 @@
-
+tasks:
+- name: aws-cli
+  env:
+    AWS_CLI_AUTO_PROMPT: on-partial
+  init: |
+    cd /workspace
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -0 "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo •/aws/install cd
+    cd $aws-bootcamp-cruddur-2023
 vscode:
   extensions:
-    - 42Crunch.vscode-openapi
+    - 42Crunch.vscode-op
