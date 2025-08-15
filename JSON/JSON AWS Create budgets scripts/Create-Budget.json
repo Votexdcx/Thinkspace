@@ -1,0 +1,23 @@
+{
+    "BudgetName": "ExerciseBudget1",
+    "BudgetLimit": {
+        "Amount": "1",
+        "Unit": "USD"
+    },
+    "CostTypes": {
+        "IncludeTax": true,
+        "IncludeSubscription": true,
+        "UseBlended": false,
+        "IncludeRefund": false,
+        "IncludeCredit": false,
+        "IncludeUpfront": true,
+        "IncludeRecurring": true,
+        "UseAmortized": false
+    },
+    "TimeUnit": "MONTHLY",
+    "TimePeriod": {
+        "Start": "2025-08-01T00:00:00Z",
+        "End": "2025-09-01T00:00:00Z"
+    },
+    "BudgetType": "COST"
+}

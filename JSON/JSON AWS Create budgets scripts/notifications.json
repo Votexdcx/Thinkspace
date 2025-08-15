@@ -1,0 +1,8 @@
+{
+    "NotificationType": "ACTUAL",
+    "ComparisonOperator": "EQUAL_TO",
+    "Threshold": 70,
+    "ThresholdType": "PERCENTAGE",
+    "NotificationState": "ALARM"
+
+}
