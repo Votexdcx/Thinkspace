@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from backenddjango.ThinkSpace import views
 
 urlpatterns = [
+    path('api/activities/home', views.home_activities),  # React will call this
     path('admin/', admin.site.urls),
 ]

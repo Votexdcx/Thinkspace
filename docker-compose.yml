@@ -8,7 +8,7 @@ services:
     volumes:
       - ./backenddjango:/backenddjango
     environment:
-      FRONTEND_URL: "https://3001-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
+      FRONTEND_URL: "https://3000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
     networks:
       - internal_network
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./frontend-react-js:/frontend-react-js
     environment:
-      REACT_APP_BACKEND_URL: "https://4567-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
+      REACT_APP_BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
     networks:
       - internal_network
 
