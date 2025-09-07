@@ -19,7 +19,10 @@ from django.urls import path
 from ThinkSpace import views
 
 
+
 urlpatterns = [
     path('api/activities/home', views.home_activities),
+    path('api/activities/home/notifications', views.notification_activity),
+
     path('admin/', admin.site.urls),
 ]
