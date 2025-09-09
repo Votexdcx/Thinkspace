@@ -23,6 +23,13 @@ from ThinkSpace import views
 urlpatterns = [
     path('api/activities/home', views.home_activities),
     path('api/activities/home/notifications', views.notification_activity),
+    path('api/activities/home/user_activities', views.user_activities),
+    path('api/activities/home/show_activity', views.show_activity),
+    path('api/activities/home/messages', views.messages),
+    path('api/activities/home/message_groups', views.message_groups),
+    path('api/activities/home/create_message', views.create_message),
+    path('api/activities/home/create_activity', views.create_activity),
+    path('api/activities/home/create_reply', views.create_reply),
 
     path('admin/', admin.site.urls),
 ]

@@ -10,65 +10,63 @@ from .Services.message_groups import MessageGroups
 from .Services.notification_activity import NotificationActivity
 from .Services.search_activities import SearchActivities
 from .Services.user_activities import UserActivities
+from .Services.create_message import CreateMessage
 
 
 @api_view(["GET"])
 def home_activities(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = HomeActivities()
+    result = service.run()
+    return JsonResponse(result, safe=False)
+
 @api_view(["GET"])
 def create_message(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = CreateMessage()
+    result = service.run()
+    return JsonResponse(result, safe=False)
+
 @api_view(["GET"])
 def create_reply(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = CreateReply()
+    result = service.run()
+    return JsonResponse(result, safe=False)
+
 @api_view(["GET"])
 def create_activity(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = CreateActivity()
+    result = service.run()
+    return JsonResponse(result, safe=False)
+
 @api_view(["GET"])
 def message_groups(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = MessageGroups()
+    result = service.run()
+    return JsonResponse(result, safe=False)
+
 @api_view(["GET"])
 def messages(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = Messages()
+    result = service.run()
+    return JsonResponse(result, safe=False)
 
 @api_view(["GET"])
 def search_activities(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = SearchActivities()
+    result = service.run()
+    return JsonResponse(result, safe=False)
 
 @api_view(["GET"])
 def show_activity(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = ShowActivities()
+    result = service.run()
+    return JsonResponse(result, safe=False)
 
 @api_view(["GET"])
 def user_activities(request):
-    return Response([
-        {"id": 1, "title": "Learn Django"},
-        {"id": 2, "title": "Connect React frontend"}
-    ])
+    service = UserActivities()
+    result = service.run()
+    return JsonResponse(result, safe=False)
+
 @api_view(["GET"])
 def notification_activity(request):
     service = NotificationActivity()
