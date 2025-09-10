@@ -21,6 +21,7 @@ from ThinkSpace import views
 
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('api/activities/home', views.home_activities),
     path('api/activities/home/notifications', views.notification_activity),
     path('api/activities/home/user_activities', views.user_activities),
@@ -30,6 +31,4 @@ urlpatterns = [
     path('api/activities/home/create_message', views.create_message),
     path('api/activities/home/create_activity', views.create_activity),
     path('api/activities/home/create_reply', views.create_reply),
-
-    path('admin/', admin.site.urls),
 ]

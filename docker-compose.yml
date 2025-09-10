@@ -1,7 +1,14 @@
 version: "3.9"
 
 services:
+
   backenddjango:
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     build: ./backenddjango
     ports:
       - "8000:8000"
@@ -10,10 +17,19 @@ services:
     environment:
       FRONTEND_URL: "https://3000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
+      OTEL.SERVICE: "backenddjango"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=hcaik_01k4sgfqzhy6v2enqng1j4hsf5"
     networks:
       - internal_network
 
   frontend-react-js:
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     build: ./frontend-react-js
     ports:
       - "3000:3000"
@@ -24,7 +40,45 @@ services:
     networks:
       - internal_network
 
+  dynamodb-local:
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8001:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+  db:
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    image: postgres:13-alpine
+    restart: always
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+
 networks:
   internal_network:
     driver: bridge
     name: ThinkSpace
+
+volumes:
+  db:
+    driver: local
