@@ -11,12 +11,15 @@ from .Services.notification_activity import NotificationActivity
 from .Services.search_activities import SearchActivities
 from .Services.user_activities import UserActivities
 from .Services.create_message import CreateMessage
+from aws_xray_sdk.core import xray_recorder
 
 
 @api_view(["GET"])
 def home_activities(request):
+    segment = xray_recorder.begin_segment('test-segment')
     service = HomeActivities()
     result = service.run()
+    xray_recorder.end_segment()
     return JsonResponse(result, safe=False)
 
 @api_view(["GET"])

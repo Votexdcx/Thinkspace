@@ -17,11 +17,12 @@ services:
     environment:
       FRONTEND_URL: "https://3000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
-      OTEL.SERVICE: "backenddjango"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
-      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=hcaik_01k4sgfqzhy6v2enqng1j4hsf5"
+      AWS_XRAY_DAEMON_ADDRESS: xray-daemon:2000
     networks:
       - internal_network
+    depends_on:
+      - xray-daemon
+      - db
 
   frontend-react-js:
     healthcheck:
@@ -73,6 +74,18 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
 
+  xray-daemon:
+    image: amazon/aws-xray-daemon
+    ports:
+      - "2000:2000/udp"
+    command: >
+      /usr/bin/xray -r eu-west-2
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=eu-west-2
+    networks:
+      - internal_network
 
 networks:
   internal_network:
