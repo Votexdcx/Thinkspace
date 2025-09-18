@@ -31,4 +31,5 @@ urlpatterns = [
     path('api/activities/home/create_message', views.create_message),
     path('api/activities/home/create_activity', views.create_activity),
     path('api/activities/home/create_reply', views.create_reply),
+    path('api/activities/home/test', views.ksnkn),
 ]

@@ -11,6 +11,13 @@ import os
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
 from django.core.wsgi import get_wsgi_application
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # add project root to path
+
+from cloudwatch_logging import setup_cloudwatch
+setup_cloudwatch()
 patch_all()
 xray_recorder.configure(
     service='MyDjangoService',

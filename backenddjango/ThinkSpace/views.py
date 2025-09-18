@@ -1,5 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import render
+from django.http import HttpResponse
 from django.http import JsonResponse
 from .Services.create_activity import CreateActivity
 from .Services.create_reply import CreateReply
@@ -16,10 +18,10 @@ from aws_xray_sdk.core import xray_recorder
 
 @api_view(["GET"])
 def home_activities(request):
-    segment = xray_recorder.begin_segment('test-segment')
+   # segment = xray_recorder.begin_segment('test-segment')
     service = HomeActivities()
     result = service.run()
-    xray_recorder.end_segment()
+   # xray_recorder.end_segment()
     return JsonResponse(result, safe=False)
 
 @api_view(["GET"])
@@ -75,6 +77,13 @@ def notification_activity(request):
     service = NotificationActivity()
     result = service.run()
     return JsonResponse(result, safe=False)
+
+
+@api_view(["GET"])
+def ksnkn(request):
+    a = None
+    a.hello() # Creating an error with an invalid line of code
+    return HttpResponse("Hello, world. You're at the pollapp index.")
 
 
 

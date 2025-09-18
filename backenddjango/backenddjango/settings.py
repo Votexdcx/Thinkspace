@@ -11,11 +11,26 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import watchtower
+import logging
 import aws_xray_sdk.core
 from aws_xray_sdk.core import patch_all, xray_recorder
-
+import boto3
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 
 # Quick-start development settings - unsuitable for production
@@ -55,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware'
 ]
 
 ROOT_URLCONF = 'backenddjango.urls'
@@ -82,6 +98,13 @@ XRAY_RECORDER = {
     'AWS_XRAY_TRACING_NAME': 'YourDjangoApp',
     'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
     'AUTO_INSTRUMENT': True,
+}
+
+ROLLBAR = {
+    'access_token': 'c55ccfa44de6418dbe5ddb82b1dba146',
+    'environment': 'development' if DEBUG else 'production',
+    'code_version': '1.0',
+    'root': BASE_DIR,
 }
 
 # Database
