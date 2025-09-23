@@ -4,7 +4,7 @@ import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
 
 // [TODO] Authenication
-import {Amplify} from 'aws-amplify';
+import { signIn } from '@aws-amplify/auth';
 
 export default function SignupPage() {
 
@@ -15,7 +15,7 @@ export default function SignupPage() {
   const [password, setPassword] = React.useState('');
   const [errors, setErrors] = React.useState('');
 
-  const onsubmit = async (event) => {
+ /* const onsubmit = async (event) => {
     event.preventDefault();
     console.log('SignupPage.onsubmit')
     // [TODO] Authenication
@@ -27,30 +27,28 @@ export default function SignupPage() {
     window.location.href = `/confirm?email=${email}`
     return false
   }
+  */
 
-  const onSubmit = async (event) => {
-  event.preventDefault(); // Prevent form from submitting normally
-  setErrors(""); // Clear previous errors if using React
+  const onsubmit = async (event) => {
+    event.preventDefault(); // Prevent form from submitting normally
+    setErrors(""); // Clear previous errors if using React
+    try {
+      signIn(email, password) // Sign in with AWS Cognito
+      .then(user=>{
+      localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken);
+      window.location.href = "/"
+      })
+      .catch(err =>{console.log('Error!',err)});
 
-  try {
-    const user = await Auth.signIn(username, password); // Sign in with AWS Cognito
-
-    // Save JWT token to local storage
-    localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken);
-
-    // Redirect to homepage
-    window.location.href = "/";
-  } catch (error) {
-    console.log("Error!", error);
-
-    if (error.code === 'UserNotConfirmedException') {
-      // Redirect to confirmation page if user hasn't confirmed email
-      window.location.href = "/confirm";
-    } else {
-      setErrors(error.message || "An unknown error occurred.");
+    }catch (error) {
+      if (error.code == 'UserNotConfirmedException') {
+        // Redirect to confirmation page if user hasn't confirmed email
+        window.location.href = "/confirm";
+      }
+        setErrors(error.message || "An unknown error occurred.");
+      }
+      return false
     }
-    return false
-  }
 
   const name_onchange = (event) => {
     setName(event.target.value);
@@ -76,7 +74,7 @@ export default function SignupPage() {
         <Logo className='logo' />
       </div>
       <div className='signup-wrapper'>
-        <form 
+        <form
           className='signup_form'
           onSubmit={onsubmit}
         >
@@ -87,7 +85,7 @@ export default function SignupPage() {
               <input
                 type="text"
                 value={name}
-                onChange={name_onchange} 
+                onChange={name_onchange}
               />
             </div>
 
@@ -96,7 +94,7 @@ export default function SignupPage() {
               <input
                 type="text"
                 value={email}
-                onChange={email_onchange} 
+                onChange={email_onchange}
               />
             </div>
 
@@ -105,7 +103,7 @@ export default function SignupPage() {
               <input
                 type="text"
                 value={username}
-                onChange={username_onchange} 
+                onChange={username_onchange}
               />
             </div>
 
@@ -114,7 +112,7 @@ export default function SignupPage() {
               <input
                 type="password"
                 value={password}
-                onChange={password_onchange} 
+                onChange={password_onchange}
               />
             </div>
           </div>

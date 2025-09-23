@@ -1,6 +1,6 @@
 import './HomeFeedPage.css';
 import React from "react";
-import {Auth} from "aws-amplify"
+import { getCurrentUser } from '@aws-amplify/auth';
 import DesktopNavigation  from '../components/DesktopNavigation';
 import DesktopSidebar     from '../components/DesktopSidebar';
 import ActivityFeed from '../components/ActivityFeed';
@@ -37,25 +37,16 @@ export default function HomeFeedPage() {
     }
   };
 
-  const checkAuth = async () => {
-    console.log('checkAuth')
-    // [TODO] Authenication
-    if (Cookies.get('user.logged_in')) {
-      setUser({
-        display_name: Cookies.get('user.name'),
-        handle: Cookies.get('user.username')
-      })
-    }
-  };
-    const checkAuth = async () => {
-    Auth.currentAuthenticatedUser ({
 
-        bypassCache = false
+    const checkAuth = async () => {
+    getCurrentUser ({
+
+        bypassCache: false
 
     })
      .then ((user) => {
         console.log('user' ,user);
-        return Auth.currentAuthenticatedUser()
+        return getCurrentUser()
     }).then ((cognito_user) => {
         setUser({
             display_name: cognito_user.attributes.name,

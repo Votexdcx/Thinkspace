@@ -4,8 +4,7 @@ import React from "react";
 
 // [TODO] Authenication
 //import Cookies from 'js-cookie'
-import {Auth} from "aws-amplify"
-
+import { signOut } from '@aws-amplify/auth';
 
 export default function ProfileInfo(props) {
   const [popped, setPopped] = React.useState(false);
@@ -14,9 +13,9 @@ export default function ProfileInfo(props) {
     setPopped(!popped)
   }
 
- const signout = async () => {
+ const SignOut = async () => {
 try {
-    await Auth.signOut({ global: true});
+    await SignOut({ global: true});
     window.location.href ="/"
 
     }catch(error){
@@ -27,7 +26,7 @@ try {
 
   const classes = () => {
     let classes = ["profile-info-wrapper"];
-    if (popped == true){
+    if (popped === true){
       classes.push('popped');
     }
     return classes.join(' ');
@@ -36,7 +35,7 @@ try {
   return (
     <div className={classes()}>
       <div className="profile-dialog">
-        <button onClick={signOut}>Sign Out</button> 
+        <button onClick={SignOut}>Sign Out</button>
       </div>
       <div className="profile-info" onClick={click_pop}>
         <div className="profile-avatar"></div>
