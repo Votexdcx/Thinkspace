@@ -38,6 +38,10 @@ services:
       - ./frontend-react-js:/frontend-react-js
     environment:
       REACT_APP_BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
+      REACT_APP_AWS_PROJECT_REGION: "eu-west-2"
+      REACT_APP_AWS_COGNITO_REGION: "eu-west-2"
+      REACT_APP_AWS_USER_POOLS_ID: "eu-west-2_JFG4zlW8J"
+      REACT_APP_CLIENT_ID: "7kjrn8g78glhtdh15skjlcp5d5"
     networks:
       - internal_network
 

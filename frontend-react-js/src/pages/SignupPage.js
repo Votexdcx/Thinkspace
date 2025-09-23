@@ -4,7 +4,7 @@ import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
 
 // [TODO] Authenication
-import Cookies from 'js-cookie'
+import {Amplify} from 'aws-amplify';
 
 export default function SignupPage() {
 
@@ -25,6 +25,30 @@ export default function SignupPage() {
     Cookies.set('user.password', password)
     Cookies.set('user.confirmation_code',1234)
     window.location.href = `/confirm?email=${email}`
+    return false
+  }
+
+  const onSubmit = async (event) => {
+  event.preventDefault(); // Prevent form from submitting normally
+  setErrors(""); // Clear previous errors if using React
+
+  try {
+    const user = await Auth.signIn(username, password); // Sign in with AWS Cognito
+
+    // Save JWT token to local storage
+    localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken);
+
+    // Redirect to homepage
+    window.location.href = "/";
+  } catch (error) {
+    console.log("Error!", error);
+
+    if (error.code === 'UserNotConfirmedException') {
+      // Redirect to confirmation page if user hasn't confirmed email
+      window.location.href = "/confirm";
+    } else {
+      setErrors(error.message || "An unknown error occurred.");
+    }
     return false
   }
 
