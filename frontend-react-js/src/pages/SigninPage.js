@@ -2,6 +2,8 @@ import './SigninPage.css';
 import React from "react";
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
+import { signOut, getCurrentUser, signIn, fetchAuthSession } from '@aws-amplify/auth';
+
 
 // [TODO] Authenication
 import Cookies from 'js-cookie'
@@ -12,18 +14,49 @@ export default function SigninPage() {
   const [password, setPassword] = React.useState('');
   const [errors, setErrors] = React.useState('');
 
-  const onsubmit = async (event) => {
-    event.preventDefault();
-    setErrors('')
-    console.log('onsubmit')
-    if (Cookies.get('user.email') === email && Cookies.get('user.password') === password){
-      Cookies.set('user.logged_in', true)
-      window.location.href = "/"
-    } else {
-      setErrors("Email and password is incorrect or account doesn't exist")
+
+
+ const onsubmit = async (event) => {
+  event.preventDefault(); // Prevent form from submitting normally
+  setErrors(""); // Clear previous errors
+ /* try {
+    const existingUser = await getCurrentUser();
+    if (existingUser) {
+      await signOut(); // Sign out before re-signing in
     }
-    return false
+  } catch (e) {
+    // No user currently signed in — safe to proceed
   }
+  */
+
+  try {
+    const user = await signIn({
+      username: email, // 'email' variable from state
+      password: password,
+    });
+
+    // Get token if available and redirect
+    const session = await fetchAuthSession();
+    const accessToken = session.tokens?.accessToken?.toString();
+    if (accessToken) {
+      localStorage.setItem("access_token", accessToken);
+      window.location.href = "/";
+    } else {
+      console.warn("Access token not found in user session.");
+    }
+  } catch (error) {
+    console.error("Sign-in error:", error);
+
+    if (error.code === 'UserNotConfirmedException') {
+      window.location.href = "/confirm";
+      return;
+    }
+
+    setErrors(error.message || "An unknown error occurred.");
+  }
+
+  return false;
+};
 
   const email_onchange = (event) => {
     setEmail(event.target.value);
@@ -43,7 +76,7 @@ export default function SigninPage() {
         <Logo className='logo' />
       </div>
       <div className='signin-wrapper'>
-        <form 
+        <form
           className='signin_form'
           onSubmit={onsubmit}
         >
@@ -54,7 +87,7 @@ export default function SigninPage() {
               <input
                 type="text"
                 value={email}
-                onChange={email_onchange} 
+                onChange={email_onchange}
               />
             </div>
             <div className='field text_field password'>
@@ -62,7 +95,7 @@ export default function SigninPage() {
               <input
                 type="password"
                 value={password}
-                onChange={password_onchange} 
+                onChange={password_onchange}
               />
             </div>
           </div>

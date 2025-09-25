@@ -1,11 +1,11 @@
 import './ProfileInfo.css';
 import {ReactComponent as ElipsesIcon} from './svg/elipses.svg';
 import React from "react";
+import { signOut, getCurrentUser } from '@aws-amplify/auth';
+
 
 // [TODO] Authenication
 //import Cookies from 'js-cookie'
-import { signOut } from '@aws-amplify/auth';
-
 export default function ProfileInfo(props) {
   const [popped, setPopped] = React.useState(false);
 
@@ -14,14 +14,15 @@ export default function ProfileInfo(props) {
   }
 
  const SignOut = async () => {
-try {
-    await SignOut({ global: true});
-    window.location.href ="/"
-
-    }catch(error){
-        console.log('error signing out',error)
+ try {
+    const existingUser = await getCurrentUser();
+    if (existingUser) {
+      await signOut(); // Sign out before re-signing in
+      window.location.href ="/"
     }
-
+  } catch (e) {
+    // No user currently signed in — safe to proceed
+  }
 }
 
   const classes = () => {

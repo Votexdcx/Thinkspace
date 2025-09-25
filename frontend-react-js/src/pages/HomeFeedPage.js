@@ -1,6 +1,6 @@
 import './HomeFeedPage.css';
 import React from "react";
-import { getCurrentUser } from '@aws-amplify/auth';
+import { getCurrentUser ,fetchUserAttributes} from '@aws-amplify/auth';
 import DesktopNavigation  from '../components/DesktopNavigation';
 import DesktopSidebar     from '../components/DesktopSidebar';
 import ActivityFeed from '../components/ActivityFeed';
@@ -21,7 +21,6 @@ export default function HomeFeedPage() {
   const loadData = async () => {
     try {
       const backend_url = `http://127.0.0.1:8000/api/activities/home`
-      console.log(process.env.REACT_APP_BACKEND_URL)
       const res = await fetch(backend_url, {
         method: "GET"
       });
@@ -39,24 +38,29 @@ export default function HomeFeedPage() {
 
 
     const checkAuth = async () => {
-    getCurrentUser ({
+  try {
+    // Get the current authenticated user
+    const user = await getCurrentUser({ bypassCache: false });
+    console.log("Cognito User:", user);
 
-        bypassCache: false
+    // Get user attributes (e.g., given_name, preferred_username)
+    const attributes = await fetchUserAttributes();
+    console.log("User Attributes:", attributes);
 
-    })
-     .then ((user) => {
-        console.log('user' ,user);
-        return getCurrentUser()
-    }).then ((cognito_user) => {
-        setUser({
-            display_name: cognito_user.attributes.name,
-            handle: cognito_user.attributes.preferred_username
-        })
-    })
-        .catch((err) => console.log(err));
-    };
+    // Safely set the user state
+    setUser({
+      display_name: attributes.given_name,
+      handle: attributes.preferred_username
+    });
+  } catch (err) {
+    console.error("Authentication error:", err);
+  }
+};
 
-
+    const getatributes = async() =>{
+    const attributes = await fetchUserAttributes();
+    return attributes
+  }
 
   React.useEffect(()=>{
     //prevents double call

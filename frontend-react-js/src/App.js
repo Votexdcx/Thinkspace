@@ -17,13 +17,13 @@ import {
 } from "react-router-dom";
 import { Amplify } from 'aws-amplify';
 
-
 Amplify.configure({
   Auth: {
-    region: process.env.REACT_APP_AWS_PROJECT_REGION,
-    userPoolId: process.env.REACT_APP_AWS_USER_POOLS_ID,
-    userPoolWebClientId: process.env.REACT_APP_CLIENT_ID,
-    oauth: {}
+    Cognito: {
+      userPoolId: 'eu-west-2_uhta1UGB8',
+      userPoolClientId: '2nc4152vpivm81j2qfapb9u75f',
+
+    }
   }
 });
 
@@ -74,4 +74,4 @@ function App() {
   );
 }
 
-export default App;p;
+export default App;
