@@ -22,6 +22,9 @@ export default function HomeFeedPage() {
     try {
       const backend_url = `http://127.0.0.1:8000/api/activities/home`
       const res = await fetch(backend_url, {
+        headers:{
+          authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
         method: "GET"
       });
       let resJson = await res.json();
