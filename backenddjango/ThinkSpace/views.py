@@ -14,11 +14,20 @@ from .Services.search_activities import SearchActivities
 from .Services.user_activities import UserActivities
 from .Services.create_message import CreateMessage
 from aws_xray_sdk.core import xray_recorder
-
+from .cognito_auth import verify_jwt_token
 
 @api_view(["GET"])
 def home_activities(request):
    # segment = xray_recorder.begin_segment('test-segment')
+    jwt = request.headers.get('Authorization')
+    if jwt and jwt.startswith("Bearer "):
+        token = jwt.split(" ")[1]
+        verified_jwttoken = verify_jwt_token(token)
+        print(verified_jwttoken)
+    else:
+        token = None
+
+    print(verified_jwttoken)
     service = HomeActivities()
     result = service.run()
    # xray_recorder.end_segment()

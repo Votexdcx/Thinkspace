@@ -97,7 +97,8 @@ XRAY_RECORDER = {
 
     'AWS_XRAY_TRACING_NAME': 'YourDjangoApp',
     'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
-    'AUTO_INSTRUMENT': True,
+    'AUTO_INSTRUMENT': False,
+
 }
 
 ROLLBAR = {
