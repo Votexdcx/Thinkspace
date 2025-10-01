@@ -1,0 +1,18 @@
+#! /bin/bash
+
+#CYAN= '\033[1;36m'
+#NO_COLOR ='\033[0m'
+#LABEL="db-schema-load"
+#printf "${CYAN}== ${LABEL}${NO_COLOR)\n"
+if [ "$1" = "prod" ]; then
+  echo "prod"
+  URL=$PROD_CONNECTION_URL
+else
+  echo "no prod"
+  URL=$CONNECTION_URL
+fi
+
+#seed_path"$(realpath .)/db/schema.sql"
+#psql $CONNECTION_URL thinkspace < $seed_path
+psql $URL thinkspace < db/seed.sql
+

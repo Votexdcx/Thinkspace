@@ -1,0 +1,2 @@
+export CONNECTION_URL="postgresql://postgres:password@localhost:5432"
+PROD_CONNECTION_URL="postgresql://cruddurroot:12345678@thinkspace.c32ye0guaums.eu-west-2.rds.amazonaws.com:5432/thinkspace
