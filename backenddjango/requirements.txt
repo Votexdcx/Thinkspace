@@ -7,3 +7,5 @@ watchtower>=3.0,<4.0
 rollbar
 pyjwt
 python-jose
+psycopg [binary]
+psycopg[pool]

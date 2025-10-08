@@ -3,7 +3,7 @@ import os
 import boto3
 import watchtower
 
-
+"""""""""""
 def setup_cloudwatch():
 
     aws_access_key_id = "AKIAXZE4WNHMPE3MEFOH"
@@ -32,3 +32,4 @@ def setup_cloudwatch():
         logging.getLogger().info("✅ CloudWatch logging initialized.")
     except Exception as e:
         logging.getLogger().error(f"❌ Failed to init CloudWatch logging: {e}")
+"""""""""""

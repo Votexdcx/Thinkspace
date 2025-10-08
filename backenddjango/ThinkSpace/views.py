@@ -27,7 +27,6 @@ def home_activities(request):
     else:
         token = None
 
-    print(verified_jwttoken)
     service = HomeActivities()
     result = service.run()
    # xray_recorder.end_segment()

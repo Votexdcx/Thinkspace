@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import watchtower
 import logging
-import aws_xray_sdk.core
-from aws_xray_sdk.core import patch_all, xray_recorder
+#import aws_xray_sdk.core
+#from aws_xray_sdk.core import patch_all, xray_recorder
 import boto3
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,7 +63,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
-    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
+    #'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,13 +93,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backenddjango.wsgi.application'
 
-XRAY_RECORDER = {
+#XRAY_RECORDER = {
 
-    'AWS_XRAY_TRACING_NAME': 'YourDjangoApp',
-    'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
-    'AUTO_INSTRUMENT': False,
+    #'AWS_XRAY_TRACING_NAME': 'YourDjangoApp',
+    #'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
+    #'AUTO_INSTRUMENT': False,
 
-}
+#}
 
 ROLLBAR = {
     'access_token': 'c55ccfa44de6418dbe5ddb82b1dba146',

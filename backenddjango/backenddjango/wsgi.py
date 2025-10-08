@@ -16,13 +16,13 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # add project root to path
 
-from cloudwatch_logging import setup_cloudwatch
-setup_cloudwatch()
+#from cloudwatch_logging import setup_cloudwatch
+#setup_cloudwatch()
 patch_all()
-xray_recorder.configure(
-    service='MyDjangoService',
-    daemon_address='xray-daemon:2000',
-)
+#xray_recorder.configure(
+#    service='MyDjangoService',
+#    daemon_address='xray-daemon:2000',
+#)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backenddjango.settings')
 
 application = get_wsgi_application()

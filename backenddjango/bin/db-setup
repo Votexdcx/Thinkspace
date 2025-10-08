@@ -1,6 +1,6 @@
 #! /bin/bash
 bin_path="$(realpath .)/bin"
-
+echo ${bin_path}
 source "$bin_path/db-drop"
 source "$bin_path/db-create"
 source "$bin_path/db-schema-load"
