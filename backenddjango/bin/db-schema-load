@@ -1,18 +1,21 @@
-#! /bin/bash
+#!/usr/bin/env bash
+# ^ Always include this at the top so the system knows it's a bash script
 
-#CYAN= '\033[1;36m'
-#NO_COLOR ='\033[0m'
-#LABEL="db-schema-load"
-#printf "${CYAN}== ${LABEL}${NO_COLOR)\n"
+# Get full path to schema.sql file
+schema_path="$(realpath .)/db/schema.sql"
+
+# Check if first argument ($1) is "prod"
 if [ "$1" = "prod" ]; then
-  echo "prod"
+  echo "Environment: prod"
   URL=$PROD_CONNECTION_URL
 else
-  echo "no prod"
+  echo "Environment: dev/test"
   URL=$CONNECTION_URL
 fi
 
-schema_path="$(realpath .)/db/schema.sql"
-#psql $CONNECTION_URL thinkspace < $schema_path
-psql $URL thinkspace < db/schema.sql
+# Debugging output (optional)
+echo "Using URL: $URL"
+echo "Schema path: $schema_path"
 
+# Run the SQL file against the database
+psql "$URL" -f "$schema_path"

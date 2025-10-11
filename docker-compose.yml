@@ -10,7 +10,8 @@ services:
       - ./backenddjango:/backenddjango
     environment:
 
-      CONNECTION_URL: "postgresql://postgres:password@db:5432/thinkspace"
+      CONNECTION_URL: ${CONNECTION_URL}
+      PROD_CONNECTION_URL: ${PROD_CONNECTION_URL}
       FRONTEND_URL: "https://3000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       #AWS_XRAY_DAEMON_ADDRESS: xray-daemon:2000
