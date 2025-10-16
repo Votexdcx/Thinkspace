@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.request import Request
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -44,10 +45,15 @@ def create_reply(request):
     result = service.run()
     return JsonResponse(result, safe=False)
 
-@api_view(["GET"])
-def create_activity(request):
+@api_view(["POST"])
+def create_activity(request:Request):
+
+    ttl = request.data.get("ttl")
+    message = request.data.get("message")
+    user_handle = request.data.get("user_handle")
+
     service = CreateActivity()
-    result = service.run()
+    result = service.run(message,user_handle,ttl )
     return JsonResponse(result, safe=False)
 
 @api_view(["GET"])

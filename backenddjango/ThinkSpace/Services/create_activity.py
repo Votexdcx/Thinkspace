@@ -1,12 +1,17 @@
 import uuid
 from datetime import datetime, timedelta, timezone
+from .db import query_wrap_array
+from .db import pool
 class CreateActivity:
-  def run(message, user_handle, ttl):
+  def run(self, message, user_handle, ttl):
     model = {
       'errors': None,
       'data': None
     }
-
+    print("////////////////////////////////////////")
+    print("message:", message)
+    print("userhandle:", user_handle)
+    print("time;", ttl)
     now = datetime.now(timezone.utc).astimezone()
 
     if (ttl == '30-days'):
@@ -40,6 +45,7 @@ class CreateActivity:
         'message': message
       }   
     else:
+      self.CreateQuery()
       model['data'] = {
         'uuid': uuid.uuid4(),
         'display_name': 'Andrew Brown',
@@ -49,3 +55,25 @@ class CreateActivity:
         'expires_at': (now + ttl_offset).isoformat()
       }
     return model
+  
+  def CreateQuery(self, message, user_handle,ttl ):
+     sql = query_wrap_array("""
+       SELECT 
+        activities.uuid,
+        users.display_name,
+        users.handle,
+        activities.message,
+        activities.replies_count,
+        activities.reposts_count,
+        activities.likes_count,
+        activities.reply_to_activity_uuid,
+        activities.expires_at,
+        activities.created_at
+    FROM public.activities
+    LEFT JOIN public.users ON users.uuid = activities.user_uuid
+    ORDER BY activities.created_at DESC
+
+    """)
+
+
+    

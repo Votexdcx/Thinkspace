@@ -2,6 +2,7 @@ import './ActivityForm.css';
 import React from "react";
 import process from 'process';
 import {ReactComponent as BombIcon} from './svg/bomb.svg';
+import { getCurrentUser ,fetchUserAttributes} from '@aws-amplify/auth';
 
 export default function ActivityForm(props) {
   const [count, setCount] = React.useState(0);
@@ -16,17 +17,24 @@ export default function ActivityForm(props) {
 
   const onsubmit = async (event) => {
     event.preventDefault();
+
+
     try {
-      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities`
+      const backend_url = "http://127.0.0.1:8000/api/activities/home/create_activity"
       console.log('onsubmit payload', message)
-      const res = await fetch(backend_url, {
-        method: "POST",
+      console.log(ttl)
+      const attributes = await fetchUserAttributes();
+      let user_handle = attributes.given_name
+      
+      console.log("asdakldjhlsajdl", user_handle)
+      const res = await fetch(backend_url, { method: "POST",
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           message: message,
+          user_handle: user_handle,
           ttl: ttl
         }),
       });
@@ -46,6 +54,15 @@ export default function ActivityForm(props) {
       console.log(err);
     }
   }
+
+  const getuser = async () => {
+    const user = await getCurrentUser({ bypassCache: false });
+    console.log("Cognito User:", user);
+
+    const attributes = await fetchUserAttributes();
+    console.log("User Attributes:", attributes);
+    return attributes.given_name
+  };
 
   const textarea_onchange = (event) => {
     setCount(event.target.value.length);
