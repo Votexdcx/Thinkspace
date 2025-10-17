@@ -24,7 +24,8 @@ export default function ActivityForm(props) {
       console.log('onsubmit payload', message)
       console.log(ttl)
       const attributes = await fetchUserAttributes();
-      let user_handle = attributes.given_name
+      let user_handle = attributes.given_name;
+      let uuid = attributes.sub;
       
       console.log("asdakldjhlsajdl", user_handle)
       const res = await fetch(backend_url, { method: "POST",
@@ -35,7 +36,8 @@ export default function ActivityForm(props) {
         body: JSON.stringify({
           message: message,
           user_handle: user_handle,
-          ttl: ttl
+          ttl: ttl,
+          uuid:uuid
         }),
       });
       let data = await res.json();

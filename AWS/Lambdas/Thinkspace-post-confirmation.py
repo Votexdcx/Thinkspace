@@ -33,14 +33,15 @@ def lambda_handler(event, context):
              cognito_user_id
             )
             VALUES 
-            (
-            '{user_display_name}',
-            '{user_email}',
-            '{user_handle}',
-            '{user_cognito_id}'
-            )
+            ('%s',%s',%s','%s')
          """
-        cur.execute(sql)
+        Params = (
+            user_display_name,
+            user_email,
+            user_handle,
+            user_cognito_id
+        )
+        cur.execute(sql,Params)
         conn.commit()
     except (Exception, pg8000.DatabaseError) as error:
         print(error)

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from .db import query_wrap_array
 from .db import pool
 class CreateActivity:
-  def run(self, message, user_handle, ttl):
+  def run(self, message,ttl,user_handle ):
     model = {
       'errors': None,
       'data': None
@@ -31,7 +31,7 @@ class CreateActivity:
     else:
       model['errors'] = ['ttl_blank']
 
-    if user_handle == None or len(user_handle) < 1:
+    if user_handle == None:
       model['errors'] = ['user_handle_blank']
 
     if message == None or len(message) < 1:
@@ -39,14 +39,17 @@ class CreateActivity:
     elif len(message) > 280:
       model['errors'] = ['message_exceed_max_chars'] 
 
+
+    ttl_offset2 = (now + ttl_offset).isoformat()
+    print(ttl_offset2)
     if model['errors']:
       model['data'] = {
-        'handle':  user_handle,
+        'handle':  uuid,
         'message': message
       }   
     else:
-      self.CreateQuery()
-      model['data'] = {
+        self.CreateQuery(message,ttl_offset2, user_handle)
+        model['data'] = {
         'uuid': uuid.uuid4(),
         'display_name': 'Andrew Brown',
         'handle':  user_handle,
@@ -56,24 +59,33 @@ class CreateActivity:
       }
     return model
   
-  def CreateQuery(self, message, user_handle,ttl ):
-     sql = query_wrap_array("""
-       SELECT 
-        activities.uuid,
-        users.display_name,
-        users.handle,
-        activities.message,
-        activities.replies_count,
-        activities.reposts_count,
-        activities.likes_count,
-        activities.reply_to_activity_uuid,
-        activities.expires_at,
-        activities.created_at
-    FROM public.activities
-    LEFT JOIN public.users ON users.uuid = activities.user_uuid
-    ORDER BY activities.created_at DESC
-
-    """)
+  def CreateQuery(self, message, ttl, user_handle):
+     
+    sql = f"""
+        INSERT INTO public.activities( 
+          user_uuid,
+          message,
+          expires_at
+        )
+        VALUES 
+        (
+         (SELECT uuid FROM public.users WHERE users.handle = %(user_handle)s LIMIT 1),
+         %(message)s,
+         %(ttl)s
+        )RETURNING uuid;
+      """
+    
+    with pool.connection() as conn:
+      with conn.cursor() as cur:
+        parameters = {
+          "user_handle":user_handle,
+          "message": message,
+          "ttl":ttl
+        }
+        cur.execute(sql, parameters)
+        conn.commit()
+        json = cur.fetchone()
+        print(json[0])
 
 
     

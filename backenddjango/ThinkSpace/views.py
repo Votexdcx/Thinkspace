@@ -51,9 +51,8 @@ def create_activity(request:Request):
     ttl = request.data.get("ttl")
     message = request.data.get("message")
     user_handle = request.data.get("user_handle")
-
     service = CreateActivity()
-    result = service.run(message,user_handle,ttl )
+    result = service.run(message,ttl,user_handle)
     return JsonResponse(result, safe=False)
 
 @api_view(["GET"])
