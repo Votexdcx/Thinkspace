@@ -48,15 +48,9 @@ class CreateActivity:
         'message': message
       }   
     else:
-        self.CreateQuery(message,ttl_offset2, user_handle)
-        model['data'] = {
-        'uuid': uuid.uuid4(),
-        'display_name': 'Andrew Brown',
-        'handle':  user_handle,
-        'message': message,
-        'created_at': now.isoformat(),
-        'expires_at': (now + ttl_offset).isoformat()
-      }
+        model = self.CreateQuery(message,ttl_offset2, user_handle)
+
+      
     return model
   
   def CreateQuery(self, message, ttl, user_handle):
@@ -82,10 +76,26 @@ class CreateActivity:
           "message": message,
           "ttl":ttl
         }
-        cur.execute(sql, parameters)
+        uuid = cur.execute(sql, parameters)
         conn.commit()
         json = cur.fetchone()
         print(json[0])
+        
+    sqlgetactivaties =  f"""
+         (SELECT 
+            activities.uuid, 
+            users.display_name, 
+            users.handle,
+            activities.message, 
+            activities.created_at, 
+            activities.expires_at
+          FROM public.activities 
+          INNER JOIN public.users ON users.uuid = activities.user_uuid
+          WHERE 
+            activities.uuid = %{uuid}s
+        )
+      """
+    return sqlgetactivaties
 
 
     
