@@ -42,12 +42,6 @@ services:
       - internal_network
 
   dynamodb-local:
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8001:8000/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     user: root
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:latest"

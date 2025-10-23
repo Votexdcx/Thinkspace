@@ -1,0 +1,9 @@
+#! /bin/bash
+
+if [ "$1" = "prod" ]; then
+  ENDPOINT=""
+else
+  ENDPOINT="--endpoint-url=http://localhost:8001"
+fi
+
+aws dynamodb list-tables $ENDPOINT \
