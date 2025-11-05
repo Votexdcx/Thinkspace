@@ -7,3 +7,5 @@ else
 fi
 
 aws dynamodb list-tables $ENDPOINT \
+--query "TableNames[]" \
+--output table

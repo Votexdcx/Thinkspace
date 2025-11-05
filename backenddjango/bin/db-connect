@@ -1,2 +1,2 @@
 #! /bin/bash
-psql $CONNECTION_URL
+psql postgresql://postgres:password@localhost:5432/thinkspace

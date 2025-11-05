@@ -1,10 +1,38 @@
 #!/usr/bin/env python3
-from datetime import timedelta
-
+from datetime import datetime,timedelta,timezone
 import boto3
+import sys
+from psycopg_pool import ConnectionPool
+from db import query_wrap_array
+from db import pool
 from boto3 import client
 
-from backenddjango.ThinkSpace.views import create_message
+
+def create_message(client, message, my_user_uuid, my_user_display_name, my_user_handle,created_at, message_group_uuid):
+    pass
+
+attrs = {
+    'endpoint_ur1': 'http://localhost: 8001'
+}
+# unset endpoint url for use with production database
+#if len(sys.argv) == 2:
+#    if "prod" in sys.argv[1]:
+#        attrs = {}
+#dynamodb = boto3.client( 'dynamodb',**attrs)
+
+sql=query_wrap_array("""
+       SELECT users.uuid, users.display_name, users.handle from users 
+       WHERE display_name IN ('Andrew Brown', 'Andrew Bayko')
+    """)
+with pool.connection() as conn:
+    with conn.cursor() as cur:
+        cur.execute(sql)
+        json = cur.fetchone()
+        print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
+        print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
+        print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
+        print(json[0])
+
 
 Conversation = """
 PersonA: I told you we were supposed to leave at 6, not 6:30!
@@ -31,9 +59,11 @@ PersonA: Truce. But next time, we’re leaving at 5:45.
 PersonB: Deal — as long as you promise not to set ten reminders on my phone again.
 PersonA: No promises.
 """
-
+now = datetime.now(timezone.utc).astimezone()
 lines = Conversation.lstrip('\n').rstrip('\n').split('\n')
+i = 0
 for line in lines:
+    i +=1
     if line.startswith("PersonA"):
         key = 'my_user'
         message = line.replace('PersonA: ','')
@@ -43,6 +73,5 @@ for line in lines:
     else:
         print(line)
         raise 'Invalid line'
-    created_at = (now +timedelta)
-    create_message(client=, message= message,my_user_uuid = users[key]['uuid'] ,my_user_display_name = users[key]['display_name'] ,my_user_handle =users[key]['handle'] ,created_at = created_at, message_group_uuid=)
-
+    created_at = (now +timedelta(minutes=i))
+    #.create_message(client=ddb, message= message,my_user_uuid = users[key]['uuid'] ,my_user_display_name = users[key]['display_name'] ,my_user_handle =users[key]['handle'] ,created_at = created_at, message_group_uuid=message_group_uuid)
