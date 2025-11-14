@@ -2,37 +2,80 @@
 from datetime import datetime,timedelta,timezone
 import boto3
 import sys
+from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 from db import query_wrap_array
 from db import pool
 from boto3 import client
+import boto3
+import uuid
 
 
 def create_message(client, message, my_user_uuid, my_user_display_name, my_user_handle,created_at, message_group_uuid):
-    pass
+    record = {
+        'pk': {'S': f"MSG#{message_group_uuid}"},
+        'sk': {'S': created_at},
+        'message_uuid': {'S': str(uuid.uuid4())},
+        'message': {'S': message},
+        'user_uuid': {'S': my_user_uuid},
+        'user_display_name': {'S': my_user_display_name},
+        'user_handle': {'S': my_user_handle}
+    }
+
+
 
 attrs = {
-    'endpoint_ur1': 'http://localhost: 8001'
+    'aws_access_key_id':'dummy',
+    'aws_secret_access_key':'dummy',
+    'region_name':'us-east-1',
+    'endpoint_url':'http://localhost:8001'
 }
 # unset endpoint url for use with production database
-#if len(sys.argv) == 2:
-#    if "prod" in sys.argv[1]:
-#        attrs = {}
-#dynamodb = boto3.client( 'dynamodb',**attrs)
+if len(sys.argv) == 2:
+    if "prod" in sys.argv[1]:
+        attrs = {'region_name': 'eu-west-1'}
+        print("//////////////////////////////7")
+        print("prod")
+dynamodb = boto3.client( 'dynamodb',**attrs)
 
-sql=query_wrap_array("""
-       SELECT users.uuid, users.display_name, users.handle from users 
-       WHERE display_name IN ('Andrew Brown', 'Andrew Bayko')
-    """)
-with pool.connection() as conn:
-    with conn.cursor() as cur:
-        cur.execute(sql)
-        json = cur.fetchone()
-        print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
-        print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
-        print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
-        print(json[0])
+def create_message_group(dynamodb, message_group_uuid, my_user_uuid,other_user_uuid, other_user_display_name,other_user_handle, last_message_at=None,message=None):
+    table_name = 'ThinkspaceMessage'
+    record = {
+        'PartitionKey': {'S': f"GRP#{my_user_uuid}"},
+        'SecondaryKey': {'S': last_message_at},
+        'message_group_uuid': {'S': message_group_uuid},
+        'message': {'S': message},
+        'user_uuid': {'S': other_user_uuid},
+        'user_display_name': {'S': other_user_display_name},
+        'user_handle': {'S': other_user_handle}  # fixed key
+    }
+    print(record)
+    response = dynamodb.put_item(
+        TableName ='ThinkspaceMessage',
+        Item = record)
 
+
+def usersuuid():
+    sql=("""
+           SELECT users.uuid, users.display_name, users.handle from users 
+           WHERE display_name IN ('Andrew Brown', 'Andrew Bayko')
+        """)
+    with pool.connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(sql)
+            users = cur.fetchall()
+           # print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
+           # print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
+           # print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
+            #print(users[1])
+            my_user = users[0]
+            other_user = users[1]
+            results = { 'my_user': my_user,
+                'other_user': other_user,
+                }
+           # print(results['my_user'])
+           # print(my_user['display_name'])
+            return  results
 
 Conversation = """
 PersonA: I told you we were supposed to leave at 6, not 6:30!
@@ -59,7 +102,25 @@ PersonA: Truce. But next time, we’re leaving at 5:45.
 PersonB: Deal — as long as you promise not to set ten reminders on my phone again.
 PersonA: No promises.
 """
+
+users = usersuuid()
+my_user = users['my_user']
+other_user = users['other_user']
+print(my_user['display_name'])
+print(other_user['display_name'])
+message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
 now = datetime.now(timezone.utc).astimezone()
+#print(users['my_user'])
+create_message_group(
+    dynamodb,
+    message_group_uuid,
+    str(my_user['uuid']),
+    str(other_user['uuid']),
+    other_user['display_name'],
+    other_user['handle'],
+    "lastmessage",   # last_message_at
+    "message"   # message
+)
 lines = Conversation.lstrip('\n').rstrip('\n').split('\n')
 i = 0
 for line in lines:
@@ -73,5 +134,6 @@ for line in lines:
     else:
         print(line)
         raise 'Invalid line'
-    created_at = (now +timedelta(minutes=i))
-    #.create_message(client=ddb, message= message,my_user_uuid = users[key]['uuid'] ,my_user_display_name = users[key]['display_name'] ,my_user_handle =users[key]['handle'] ,created_at = created_at, message_group_uuid=message_group_uuid)
+    created_at = (now +timedelta(minutes=i)).isoformat()
+    create_message(client=dynamodb, message= message,my_user_uuid = users[key]['uuid'] ,my_user_display_name = users[key]['display_name'] ,my_user_handle =users[key]['handle'] ,created_at = created_at, message_group_uuid=message_group_uuid)
+    #create_message(client =dynamodb,message="this is a filler message",my_user_uuid=users['other_user']['uuid'], other_user_display_name=users['my_user']['display_name'],other_user_uuid=users['my_user']['uuid'],other_user_handle=users['my_user']['handle'],Last_message_at = now.isoformat(),message_group_uuid = message_group_uuid)
