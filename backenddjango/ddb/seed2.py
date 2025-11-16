@@ -12,15 +12,21 @@ import uuid
 
 
 def create_message(client, message, my_user_uuid, my_user_display_name, my_user_handle,created_at, message_group_uuid):
+    print("Createmessage/////")
     record = {
-        'pk': {'S': f"MSG#{message_group_uuid}"},
-        'sk': {'S': created_at},
+        'PartitionKey': {'S': f"MSG#{message_group_uuid}"},
+        'SecondaryKey': {'S': created_at},
         'message_uuid': {'S': str(uuid.uuid4())},
         'message': {'S': message},
-        'user_uuid': {'S': my_user_uuid},
+        'user_uuid': {'S':str(my_user_uuid)},
         'user_display_name': {'S': my_user_display_name},
         'user_handle': {'S': my_user_handle}
     }
+    print("RECORD")
+    print(record)
+    response = dynamodb.put_item(
+        TableName='ThinkspaceMessage',
+        Item=record)
 
 
 
@@ -40,6 +46,8 @@ dynamodb = boto3.client( 'dynamodb',**attrs)
 
 def create_message_group(dynamodb, message_group_uuid, my_user_uuid,other_user_uuid, other_user_display_name,other_user_handle, last_message_at=None,message=None):
     table_name = 'ThinkspaceMessage'
+    last_message_at = last_message_at or "NONE"
+    message = message or ""
     record = {
         'PartitionKey': {'S': f"GRP#{my_user_uuid}"},
         'SecondaryKey': {'S': last_message_at},
@@ -64,17 +72,12 @@ def usersuuid():
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(sql)
             users = cur.fetchall()
-           # print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
-           # print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
-           # print("kqwhdkahdskjhdkajshdkjahskjdhksahdkh")
-            #print(users[1])
-            my_user = users[0]
-            other_user = users[1]
+            my_user = next(item for item in users if item["handle"] == 'andrewbrown')
+
+            other_user = next((item for item in users if item["handle"] == 'bayko'), None)
             results = { 'my_user': my_user,
                 'other_user': other_user,
                 }
-           # print(results['my_user'])
-           # print(my_user['display_name'])
             return  results
 
 Conversation = """
@@ -106,8 +109,7 @@ PersonA: No promises.
 users = usersuuid()
 my_user = users['my_user']
 other_user = users['other_user']
-print(my_user['display_name'])
-print(other_user['display_name'])
+
 message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
 now = datetime.now(timezone.utc).astimezone()
 #print(users['my_user'])
@@ -118,7 +120,7 @@ create_message_group(
     str(other_user['uuid']),
     other_user['display_name'],
     other_user['handle'],
-    "lastmessage",   # last_message_at
+    "lastmessage123",   # last_message_at
     "message"   # message
 )
 lines = Conversation.lstrip('\n').rstrip('\n').split('\n')
