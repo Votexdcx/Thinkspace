@@ -57,8 +57,19 @@ def create_activity(request:Request):
 
 @api_view(["GET"])
 def message_groups(request):
+    user_handle = 'andrewbrown'
+    jwt = request.headers.get('Authorization')
+    if jwt and jwt.startswith("Bearer "):
+        token = jwt.split(" ")[1]
+        verified_jwttoken = verify_jwt_token(token)
+        print(verified_jwttoken)
+    else:
+        token = None
+
     service = MessageGroups()
-    result = service.run()
+    result = service.run(user_handle)
+    print(result)
+    print("//////////////////////////////////////////////////////////////////////////////////////////&&&&&&&")
     return JsonResponse(result, safe=False)
 
 @api_view(["GET"])
