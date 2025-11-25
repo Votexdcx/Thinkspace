@@ -15,11 +15,14 @@ services:
       FRONTEND_URL: "https://3000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       BACKEND_URL: "https://8000-$(GITPOD_WORKSPACE_ID).$(GITPOD_WORKSPACE_CLUSTER_HOST)"
       #AWS_XRAY_DAEMON_ADDRESS: xray-daemon:2000
+      DYNAMODB_ENDPOINT: "http://dynamodb-local:8000"  # Add this line
+      AWS_DEFAULT_REGION: "us-east-1" 
     networks:
       - internal_network
     depends_on:
       #- xray-daemon
       - db
+      - dynamodb-local
 
   frontend-react-js:
     healthcheck:
@@ -51,6 +54,8 @@ services:
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
+    networks:         
+    - internal_network 
   db:
     image: postgres:13-alpine
     restart: always

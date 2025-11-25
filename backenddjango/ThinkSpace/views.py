@@ -27,7 +27,6 @@ def home_activities(request):
         print(verified_jwttoken)
     else:
         token = None
-
     service = HomeActivities()
     result = service.run()
    # xray_recorder.end_segment()
@@ -57,19 +56,17 @@ def create_activity(request:Request):
 
 @api_view(["GET"])
 def message_groups(request):
-    user_handle = 'andrewbrown'
+    user_handle = ""
     jwt = request.headers.get('Authorization')
     if jwt and jwt.startswith("Bearer "):
         token = jwt.split(" ")[1]
         verified_jwttoken = verify_jwt_token(token)
-        print(verified_jwttoken)
+        print("verified tokek", verified_jwttoken)
+        user_handle = verified_jwttoken['sub']
     else:
         token = None
-
     service = MessageGroups()
     result = service.run(user_handle)
-    print(result)
-    print("//////////////////////////////////////////////////////////////////////////////////////////&&&&&&&")
     return JsonResponse(result, safe=False)
 
 @api_view(["GET"])

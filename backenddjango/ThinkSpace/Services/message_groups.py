@@ -1,24 +1,58 @@
 from datetime import datetime, timedelta, timezone
+from psycopg_pool import ConnectionPool
+import boto3
+
 class MessageGroups:
   def run(self,user_handle):
     model = {
       'errors': None,
       'data': None
     }
-
-    now = datetime.now(timezone.utc).astimezone()
-    results = [
-      {
-        'uuid': '24b95582-9e7b-4e0a-9ad1-639773ab7552',
-        'display_name': 'Andrew Brown',
-        'handle':  'andrewbrown',
-        'created_at': now.isoformat()
+    #CreateQuery(self, user_handle)
+    attrs = {
+    'aws_access_key_id':'dummy',
+    'aws_secret_access_key':'dummy',
+    'region_name':'us-east-1',
+    'endpoint_url':'http://dynamodb-local:8000'
+    }
+    dynamodb = boto3.client( 'dynamodb',**attrs)
+    message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+    queryparams = {
+      'TableName': 'ThinkspaceMessage',
+      'KeyConditionExpression': 'PartitionKey = :PartitionKey',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues':{
+        ':PartitionKey': {'S': f"MSG#{message_group_uuid}"}
       },
-      {
-        'uuid': '417c360e-c4e6-4fce-873b-d2d71469b4ac',
-        'display_name': 'Worf',
-        'handle':  'worf',
-        'created_at': now.isoformat()
-    }]
-    model['data'] = results
+      'ReturnConsumedCapacity': 'TOTAL'
+    }
+    
+    response =dynamodb.query(**queryparams)
+    print()
+    print("response:", response)
+    model['data'] = response
     return model
+  
+  
+def CreateQuery(self,cognito_user_id):
+    
+    
+    connection_url = "postgresql://Thinkspacedb:quwrem-firjyz-vipmA7@thinkspace.c32ye0guaums.eu-west-2.rds.amazonaws.com:5432/thinkspace"
+    pool = ConnectionPool(conninfo=connection_url)
+    sql = f"""
+      SELECT users.uuid FROM public.users 
+      WHERE   cognito_user_id = %(cognito_user_id)s
+      LIMIT 1
+      """
+    
+    with pool.connection() as conn:
+      with conn.cursor() as cur:
+        parameters = {
+          "cognito_user_id":cognito_user_id,
+        }
+        uuid = cur.execute(sql, parameters)
+        conn.commit()
+        json = cur.fetchone()
+        print(json[0])
+        return uuid

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from datetime import datetime,timedelta,timezone
-import boto3
 import sys
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
