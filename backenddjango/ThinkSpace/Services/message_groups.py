@@ -8,7 +8,10 @@ class MessageGroups:
       'errors': None,
       'data': None
     }
-    #CreateQuery(self, user_handle)
+    
+    
+    
+    user_uuid =CreateQuery(self, user_handle)
     attrs = {
     'aws_access_key_id':'dummy',
     'aws_secret_access_key':'dummy',
@@ -17,17 +20,30 @@ class MessageGroups:
     }
     dynamodb = boto3.client( 'dynamodb',**attrs)
     message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+    #queryparams = {
+    #  'TableName': 'ThinkspaceMessage',
+    #  'KeyConditionExpression': 'PartitionKey = :PartitionKey',
+    #  'ScanIndexForward': False,
+    #  'Limit': 20,
+    #  'ExpressionAttributeValues':{
+    #    ':PartitionKey': {'S': f"MSG#{message_group_uuid}"}
+    #  },
+    #  'ReturnConsumedCapacity': 'TOTAL'
+    #}
+    #print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+    #print(user_uuid)
+    #print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+
     queryparams = {
       'TableName': 'ThinkspaceMessage',
-      'KeyConditionExpression': 'PartitionKey = :PartitionKey',
       'ScanIndexForward': False,
-      'Limit': 20,
+      'KeyConditionExpression': 'PartitionKey = :PartitionKey',
       'ExpressionAttributeValues':{
-        ':PartitionKey': {'S': f"MSG#{message_group_uuid}"}
+        ':PartitionKey': {'S': f"GRP#{'0faf4884-222e-40b4-ba68-e358264ce431'}"}
       },
       'ReturnConsumedCapacity': 'TOTAL'
     }
-    
+  
     response =dynamodb.query(**queryparams)
     print()
     print("response:", response)
@@ -54,5 +70,7 @@ def CreateQuery(self,cognito_user_id):
         uuid = cur.execute(sql, parameters)
         conn.commit()
         json = cur.fetchone()
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         print(json[0])
-        return uuid
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        return json[0]
