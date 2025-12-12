@@ -11,7 +11,7 @@ class MessageGroups:
     
     
     
-    user_uuid =CreateQuery(self, user_handle)
+    user_uuid = CreateQuery(self, user_handle)
     attrs = {
     'aws_access_key_id':'dummy',
     'aws_secret_access_key':'dummy',
@@ -71,6 +71,6 @@ def CreateQuery(self,cognito_user_id):
         conn.commit()
         json = cur.fetchone()
         print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-        print(json[0])
+        print("print json:", json)
         print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-        return json[0]
+        return json

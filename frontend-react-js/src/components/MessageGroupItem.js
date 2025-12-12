@@ -31,13 +31,13 @@ export default function MessageGroupItem(props) {
   }
 
   return (
-    <Link className={classes()} to={`/messages/@`+props.message_group.handle}>
+    <Link className={classes()} to={`/messages/@`+props.message_group.user_handle}>
       <div className='message_group_avatar'></div>
       <div className='message_content'>
-        <div classsName='message_group_meta'>
+        <div className='message_group_meta'>
           <div className='message_group_identity'>
-            <div className='display_name'>{props.message_group.display_name}</div>
-            <div className="handle">@{props.message_group.handle}</div>
+            <div className='display_name'>{props.message_group.user_display_name}</div>
+            <div className="handle">@{props.message_group.user_handle}</div>
           </div>{/* activity_identity */}
         </div>{/* message_meta */}
         <div className="message">{props.message_group.message}</div>

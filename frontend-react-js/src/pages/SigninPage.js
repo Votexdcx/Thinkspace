@@ -19,7 +19,7 @@ export default function SigninPage() {
  const onsubmit = async (event) => {
   event.preventDefault(); // Prevent form from submitting normally
   setErrors(""); // Clear previous errors
- /* try {
+  try {
     const existingUser = await getCurrentUser();
     if (existingUser) {
       await signOut(); // Sign out before re-signing in
@@ -27,7 +27,7 @@ export default function SigninPage() {
   } catch (e) {
     // No user currently signed in — safe to proceed
   }
-  */
+
 
   try {
     const user = await signIn({

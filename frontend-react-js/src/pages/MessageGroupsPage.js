@@ -1,5 +1,6 @@
 import './MessageGroupsPage.css';
 import React from "react";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 import DesktopNavigation  from '../components/DesktopNavigation';
 import MessageGroupFeed from '../components/MessageGroupFeed';
@@ -25,8 +26,11 @@ export default function MessageGroupsPage() {
       let resJson = await res.json();
       if (res.status === 200) {
         console.log("resJson ", resJson)
-        console.log("objectvalues ",Object.values(resJson))
-        setMessageGroups(Object.values(resJson.data))
+        let a = Object.values(resJson.data)
+        console.log("objectvalues ",Object.values(resJson.data))
+        const items = resJson.data.Items.map(item => unmarshall(item));
+        console.log(items)
+        setMessageGroups(items)
       } else {
         console.log(res)
       }
