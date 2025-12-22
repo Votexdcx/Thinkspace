@@ -32,4 +32,5 @@ urlpatterns = [
     path('api/activities/home/create_activity', views.create_activity),
     path('api/activities/home/create_reply', views.create_reply),
     path('api/activities/home/test', views.ksnkn),
+    path('api/activities/home/healthcheck', views.healthcheck),
 ]

@@ -1,0 +1,74 @@
+{
+  "family": "backend-django",
+  "executionRoleArn": "arn:aws:iam::535052052952:role/ThinkSpaceServiceExecutionPolicy",
+  "taskRoleArn": "arn:aws:iam::535052052952:role/ThinkspaceTaskRole",
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "containerDefinitions": [
+    {
+      "name": "backend-django",
+      "image": "535052052952.dkr.ecr.eu-west-2.amazonaws.com/backend-django",
+      "essential": true,
+      "portMappings": [
+        {
+          "name": "backend-django",
+          "containerPort": 8000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "django-log-group",
+          "awslogs-region": "eu-west-2",
+          "awslogs-stream-prefix": "django-stream"
+        }
+      },
+      "environment": [
+        {
+          "name": "AWS_COGNITO_USER_POOL_ID",
+          "value": "eu-west-2_uhta1UGB8"
+        },
+        {
+          "name": "AWS_COGNITO_USER_POOL_CLIENT_ID",
+          "value": "2nc4152vpivm81j2qfapb9u75f"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "value": "*"
+        },
+        {
+          "name": "BACKEND_URL",
+          "value": "*"
+        },
+        {
+          "name": "AWS_DEFAULT_REGION",
+          "value": "eu-west-2"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "AWS_ACCESS_KEY_ID",
+          "valueFrom": "arn:aws:ssm:eu-west-2:535052052952:parameter/Thinkspace/backend-django/AWS_ACCESS_KEY_ID"
+        },
+        {
+          "name": "AWS_SECRET_ACCESS_KEY",
+          "valueFrom": "arn:aws:ssm:eu-west-2:535052052952:parameter/Thinkspace/backend-django/AWS_SECRET_ACCESS_KEY"
+        },
+        {
+          "name": "CONNECTION_URL",
+          "valueFrom": "arn:aws:ssm:eu-west-2:535052052952:parameter/Thinkspace/backend-django/PROD_CONNECTION_URL"
+        },
+        {
+          "name": "ROLLBAR_ACCESS_TOKEN",
+          "valueFrom": "arn:aws:ssm:eu-west-2:535052052952:parameter/Thinkspace/backend-django/ROLLBAR_ACCESS_TOKEN"
+        }
+      ]
+    }
+  ]
+}

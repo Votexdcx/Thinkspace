@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM 535052052952.dkr.ecr.eu-west-2.amazonaws.com/thinkspace-python:3.12-slim
 
 # Install dependencies including PostgreSQL client
 RUN apt-get update && \
