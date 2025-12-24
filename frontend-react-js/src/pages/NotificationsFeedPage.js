@@ -20,7 +20,7 @@ export default function NotificationsFeedPage() {
 
   const loadData = async () => {
     try {
-      const backend_url = `http://127.0.0.1:8000/api/activities/home/notifications`
+      const backend_url = `https://api.thinkspace.work.gd/api/activities/home/notifications`
       console.log(process.env.REACT_APP_BACKEND_URL)
       const res = await fetch(backend_url, {
         method: "GET"

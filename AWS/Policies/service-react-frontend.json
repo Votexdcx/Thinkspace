@@ -1,0 +1,45 @@
+{
+  "cluster": "Thinkspace",
+  "launchType": "FARGATE",
+  "desiredCount": 1,
+  "enableECSManagedTags": true,
+  "enableExecuteCommand": true,
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:eu-west-2:535052052952:targetgroup/ThinkSpace-Frontend-react-js/6365194760d1d5d6",
+      "containerName": "frontend-react-js",
+      "containerPort": 3000
+    }
+  ],
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "assignPublicIp": "ENABLED",
+      "securityGroups": [
+        "sg-0e94c5bf9939960ab"
+      ],
+      "subnets": [
+        "subnet-06065b7e56b3cc652",
+        "subnet-0391f7df501e7be94",
+        "subnet-0b569676d657f1709"
+      ]
+    }
+  },
+  "propagateTags": "SERVICE",
+  "serviceName": "frontend-react-js",
+  "taskDefinition": "frontend-react-js",
+  "serviceConnectConfiguration": {
+    "enabled": false,
+    "namespace": "Thinkspace",
+    "services": [
+      {
+        "portName": "frontend-react-js",
+        "discoveryName": "frontend-react-js",
+        "clientAliases": [
+          {
+            "port": 3000
+          }
+        ]
+      }
+    ]
+  }
+}

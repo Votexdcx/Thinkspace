@@ -43,7 +43,7 @@ export default function MessageGroupPage() {
   const loadMessageGroupData = async () => {
     try {
       const handle = `@${params.handle}`;
-      const backend_url = `http://127.0.0.1:8000/api/activities/home/messages/${handle}`
+      const backend_url = `https://api.thinkspace.work.gd/api/activities/home/messages/`
       //const backend_url = `${process.env.}/api/messages/${handle}`
       const res = await fetch(backend_url, {
         method: "GET"

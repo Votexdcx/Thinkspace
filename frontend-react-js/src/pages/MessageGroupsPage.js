@@ -16,7 +16,7 @@ export default function MessageGroupsPage() {
 
   const loadData = async () => {
     try {
-      const backend_url = 'http://127.0.0.1:8000/api/activities/home/message_groups'
+      const backend_url = 'https://api.thinkspace.work.gd/api/activities/home/message_groups'
       const res = await fetch(backend_url, {
           headers:{
               authorization: `Bearer ${localStorage.getItem("access_token")}`
